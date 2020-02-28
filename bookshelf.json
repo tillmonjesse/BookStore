@@ -1,0 +1,66 @@
+[
+  {
+    "title": "Metal Gear",
+    "author": "Solid Snake",
+    "price": 2999,
+    "pages": 589,
+    "id": "717cb9e2-f1a3-40a0-9f4d-77448c77ed8a"
+  },
+  {
+    "title": "How to Start a Twitch Channel",
+    "author": "Jesse Rad Tillmon",
+    "price": 1599,
+    "pages": 201,
+    "id": "64f7a74b-2a47-4d11-b621-0e7e64546d1c"
+  },
+  {
+    "title": "Smart Watch",
+    "author": "Jesse Rad Tillmon",
+    "price": 1599,
+    "pages": 189,
+    "id": "a2fc0159-6699-4bf0-b270-9663128a6b22"
+  },
+  {
+    "title": "Beer!",
+    "author": "Kevin Hutchcraft",
+    "price": 1999,
+    "pages": 5798,
+    "id": "5f70a7eb-1a92-43f7-b064-a83ab3dd2ade",
+    "paiges": 5861
+  },
+  {
+    "title": "Gundam",
+    "author": "Jesse Rad Tillmon",
+    "price": 1399,
+    "pages": 360,
+    "id": "c7aa70e7-edfe-4593-999e-a6656d744146"
+  },
+  {
+    "title": "The Star Wars Trek",
+    "author": "Hideo Kojima",
+    "price": 3299,
+    "pages": "156",
+    "id": "db32e73c-4ada-4185-bf70-c03332c45475"
+  },
+  {
+    "title": "The Star Wars Trek",
+    "author": "Hideo Kojima",
+    "price": 3299,
+    "pages": "156",
+    "id": "17d3ff9a-43a3-48f0-8e7d-51f0134c5a07"
+  },
+  {
+    "title": "The Star Wars Trek",
+    "author": "Tikles Snowball",
+    "price": 5999,
+    "pages": 156,
+    "id": "3174f210-e75a-4405-99ed-b71439e76cd9"
+  },
+  {
+    "title": "Syrup Bottle",
+    "author": "Jason Tillmon",
+    "price": 2499,
+    "pages": 550,
+    "id": "756b7732-a5c2-4f80-96ad-9876ce455c77"
+  }
+]

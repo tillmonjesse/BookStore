@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Metal Gear",
+    "author": "Solid Snake",
+    "price": 2999,
+    "pages": 589
+  },
+  {
+    "title": "How to Start a Twitch Channel",
+    "author": "Jesse Rad Tillmon",
+    "price": 1599,
+    "pages": 201
+  },
+  {
+    "title": "Smart Watch",
+    "author": "Jesse Rad Tillmon",
+    "price": 1599,
+    "pages": 189
+  },
+  {
+    "title": "Beer!",
+    "author": "Kevin Hutchcraft",
+    "price": 1999,
+    "pages": 69420
+  },
+  {
+    "title": "Gundam",
+    "author": "Jesse Rad Tillmon",
+    "price": 1399,
+    "pages": 360
+  }
+]
