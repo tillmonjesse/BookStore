@@ -9,6 +9,17 @@ function open() {
 	return JSON.parse(file);
 };
 export const create = (title,author,price,pages) => {
+	if (
+		typeof title !== 'string' ||
+		typeof author !== 'string' ||
+		typeof price !== 'string' ||
+		typeof pages !== 'string'
+	) {
+		return 'Invalid arguments';
+	}
+	if (!/^\d+$/.test(price) || !/^\d+$/.test(pages)) { 
+		return 'Cannot have a decimal';
+	}
 	let book = {
 		title,
 		author,
@@ -40,6 +51,9 @@ export const read = (bookId) => {
 //ids don't reuse values figure out in create function
 //update
 export const change = (id,property,value) => {
+	if (property === 'id') {
+		return 'Cannot change id';
+	}
 	for (let index = 0; index < bookShelf.length; index++) {
 		if (id === bookShelf[index].id) {
 			if (!bookShelf[index].hasOwnProperty(property)){
@@ -47,6 +61,9 @@ export const change = (id,property,value) => {
 			}
 			//Refering to bookshlef -> refering to book by index -> refering to property of book by property
 			if (property === 'price' || property === 'pages') {
+				if (!/^\d+$/.test(value)) { 
+					return 'Cannot have a decimal';
+				}
 				bookShelf[index][property] = parseInt(value);
 			} else {
 				bookShelf[index][property] = value;
