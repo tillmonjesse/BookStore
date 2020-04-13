@@ -1,91 +1,89 @@
-import fs from 'fs';
 import uuid from 'uuid';
-export const bookShelf = open();
-function save(books) {
-	fs.writeFileSync('bookshelf.json',JSON.stringify(books,null,2));
-};
-function open() {
-	let file = fs.readFileSync('bookshelf.json',{encoding: 'utf8'}); 
-	return JSON.parse(file);
-};
-export const create = (title,author,price,pages) => {
-	if (
-		typeof title !== 'string' ||
-		typeof author !== 'string' ||
-		typeof price !== 'string' ||
-		typeof pages !== 'string'
-	) {
-		return 'Invalid arguments';
+
+export default class BookShelf {
+	constructor(bookRepository) {
+		this.bookRepository = bookRepository;
+		this.books = this.bookRepository.open();
 	}
-	if (!/^\d+$/.test(price) || !/^\d+$/.test(pages)) { 
-		return 'Cannot have a decimal';
+	create(title,author,price,pages) {
+		if (
+			typeof title !== 'string' ||
+			typeof author !== 'string' ||
+			typeof price !== 'string' ||
+			typeof pages !== 'string'
+		) {
+			return 'Invalid arguments';
+		}
+		if (!/^\d+$/.test(price) || !/^\d+$/.test(pages)) { 
+			return 'Cannot have a decimal';
+		}
+		let book = {
+			title,
+			author,
+			price: parseInt(price),
+			pages: parseInt(pages),
+			id: uuid.v4()
+		};
+		this.books.push(book);
+		this.bookRepository.save(this.books);
+		return book;
+		//need all info on book
+		//needs to be in the same form as a book
+		//need to add it to the bookshelf
+		//need to save the bookshelf
 	}
-	let book = {
-		title,
-		author,
-		price: parseInt(price),
-		pages: parseInt(pages),
-		id: uuid.v4()
-	};
-	bookShelf.push(book);
-	save(bookShelf);
-	return book;
-	//need all info on book
-	//needs to be in the same form as a book
-	//need to add it to the bookshelf
-	//need to save the bookshelf
-};
-/*bookShelf.forEach((book, index) => {
+/*this.books.forEach((book, index) => {
 	book.id = uuid.v4();
 });
-save(bookShelf);*/
-export const read = (bookId) => {
-	const id = bookId;
-	for (let index = 0; index < bookShelf.length; index++) {
-		if (id === bookShelf[index].id) {
-			return bookShelf[index];
-		} 
+save(this.books);*/
+	read(bookId)  {
+		const id = bookId;
+		for (let index = 0; index < this.books.length; index++) {
+			if (id === this.books[index].id) {
+				return this.books[index];
+			} 
+		}
+		return 'This book does not exist here';
 	}
-	return 'This book does not exist here';
-};
-//ids don't reuse values figure out in create function
-//update
-export const change = (id,property,value) => {
-	if (property === 'id') {
-		return 'Cannot change id';
-	}
-	for (let index = 0; index < bookShelf.length; index++) {
-		if (id === bookShelf[index].id) {
-			if (!bookShelf[index].hasOwnProperty(property)){
-				return 'This property does not exist for any book';
-			}
-			//Refering to bookshlef -> refering to book by index -> refering to property of book by property
-			if (property === 'price' || property === 'pages') {
-				if (!/^\d+$/.test(value)) { 
-					return 'Cannot have a decimal';
+	//ids don't reuse values figure out in create function
+	//update
+	change(id,property,value) {
+		if (property === 'id') {
+			return 'Cannot change id';
+		}
+		for (let index = 0; index < this.books.length; index++) {
+			if (id === this.books[index].id) {
+				if (!this.books[index].hasOwnProperty(property)){
+					return 'This property does not exist for any book';
 				}
-				bookShelf[index][property] = parseInt(value);
-			} else {
-				bookShelf[index][property] = value;
+				//Refering to bookshlef -> refering to book by index -> refering to property of book by property
+				if (property === 'price' || property === 'pages') {
+					if (!/^\d+$/.test(value)) { 
+						return 'Cannot have a decimal';
+					}
+					this.books[index][property] = parseInt(value);
+				} else {
+					this.books[index][property] = value;
+				}
+				this.bookRepository.save(this.books);
+				return this.books[index];
 			}
-			save(bookShelf);
-			return bookShelf[index];
 		}
+		return 'This book does not exist here';
 	}
-	return 'This book does not exist here';
-};
-//select an object to update
-//select the property that needs to be updated
-//save the updated book
+	//select an object to update
+	//select the property that needs to be updated
+	//save the updated book
 
-//delete
-export const remove = (id) => {
-	for (let index = 0; index < bookShelf.length; index++) {
-		if (id === bookShelf[index].id) {
-			let resultFromSplice = bookShelf.splice(index,1);
-			save(bookShelf);
-			return resultFromSplice[0];
+	//delete
+	remove(id) {
+		for (let index = 0; index < this.books.length; index++) {
+			if (id === this.books[index].id) {
+				let resultFromSplice = this.books.splice(index,1);
+				this.bookRepository.save(this.books);
+				return resultFromSplice[0];
+			}
 		}
+		return 'This book does not exist';
 	}
-	return 'This book does not exist';
 };
