@@ -1,21 +1,51 @@
 import BookShelf from '../../src/bookstore/BookShelf.js';
-import BookRepository from '../../src/bookstore/BookRepository.js';
-const bookShelf = new BookShelf(new BookRepository());
+let book =  {
+		    "title": "Metal Gear",
+		    "author": "Solid Snake",
+		    "price": 2999,
+		    "pages": 589,
+		    "id": "717cb9e2-f1a3-40a0-9f4d-77448c77ed8a"
+		  };
+let bookRepository;
+let bookShelf;
 let bookShelfLength;
-let book;
-beforeEach(() => {
+const setupBookShelf = () => {
+	bookShelf = new BookShelf(bookRepository);
 	bookShelfLength = bookShelf.books.length;
-	book = bookShelf.create('Turtle House', 'Jon Holewa', '1599', '360');
-	book = JSON.parse(JSON.stringify(book));
+};
+beforeEach(() => {
+	bookRepository = {
+		save: jest.fn(),
+		open: jest.fn(() => {
+			return [book];
+		})
+	};
+	
 });
 
-afterEach(() => {
-	bookShelf.remove(book.id);
+describe('constructor', () => {
+	test('books array is populated when constructed', () => {
+		const bookShelf = new BookShelf(bookRepository);
+		expect(bookRepository.open.mock.calls.length).toBe(1);
+		expect(bookShelf.books.length).toBe(1);
+	});
+	test('open throuws an error', () => {
+		bookRepository.open.mockImplementationOnce(() => {
+			throw new Error('testing');
+		});
+		expect(() => {
+			bookShelf = new BookShelf(bookRepository);
+		}).toThrow();
+		expect(bookRepository.open.mock.calls.length).toBe(1);
+	});
 });
 
 
 describe('read', () => {
 
+	beforeEach(() => {
+		setupBookShelf();
+	});
 	test('displays book for the given id', () => {
 	  const readBook = bookShelf.read(book.id);
 	  expect(readBook.title).toBe(book.title);
@@ -27,40 +57,56 @@ describe('read', () => {
 	});
 
 });
-
-
+// calls expects for open function
+// test throw error for open
+// test throw error for other CRUD operations
 describe('create', () => {
-
+	beforeEach(() => {
+		setupBookShelf();
+	});
 	test('is retrievable', () => {
-		expect(book.title).toBe('Turtle House');
-		expect(book.author).toBe('Jon Holewa');
-		expect(book.price).toBe(1599);
-		expect(book.pages).toBe(360);
-		expect(book.id).toBeDefined();
+		const readBook = bookShelf.create('Metal Gear', 'Solid Snake', '2999', '589');
+		expect(readBook.title).toBe('Metal Gear');
+		expect(readBook.author).toBe('Solid Snake');
+		expect(readBook.price).toBe(2999);
+		expect(readBook.pages).toBe(589);
+		expect(readBook.id).toBeDefined();
 		// create book
 		// assert created book has id
 		// assert prices / pages are number
 
 		// assert bookshelf has 1 more book
-		expect(bookShelf.books.length).toBe(bookShelfLength + 1);
+		expect(bookShelf.books.length).toBe(2);
+		expect(bookRepository.save.mock.calls.length).toBe(1);
 
 	});
 	test('price does not have a decimal', () => {
-		const message = bookShelf.create('Turtle House', 'Jon Holewa', '15.99', '36.0');
+		const message = bookShelf.create('Metal Gear', 'Solid Snake', '15.99', '36.0');
 		expect(message).toBe('Cannot have a decimal');
 	});
 	test('pages does not have a decimal', () => {
-		const message = bookShelf.create('Turtle House', 'Jon Holewa', '1599', '36.0');
+		const message = bookShelf.create('Metal Gear', 'Solid Snake', '2999', '36.0');
 		expect(message).toBe('Cannot have a decimal');
 	});
 	test('not enough info', () => {
 		const message = bookShelf.create();
 		expect(message).toBe('Invalid arguments');
 	});
+	test('error during save', () => {
+		bookRepository.save.mockImplementationOnce(() => {
+			throw new Error('testing');
+		});
+		expect(() => {
+			bookShelf.create('Metal Gear', 'Solid Snake', '2999', '589');
+		}).toThrow();
+	});
 
 });
 
 describe('remove', () => {
+	beforeEach(() => {
+		setupBookShelf();
+	});
 	test('is a book id', () => {
 		const removeBook = bookShelf.remove(book.id);
 		expect(removeBook.title).toBe(book.title);
@@ -69,9 +115,20 @@ describe('remove', () => {
 		const message = bookShelf.remove('anything');
 		expect(message).toBe('This book does not exist');
 	});
+	test('error during save', () => {
+		bookRepository.save.mockImplementationOnce(() => {
+			throw new Error('testing');
+		});
+		expect(() => {
+			bookShelf.remove(book.id);
+		}).toThrow();
+	});
 });
 
 describe('change', () => {
+	beforeEach(() => {
+		setupBookShelf();
+	});
 	test('changing property value', () => {
 		let changeBook = bookShelf.change(book.id, 'title', 'anything');
 		expect(changeBook.title).toBe('anything');
@@ -99,5 +156,13 @@ describe('change', () => {
 	test('make sure id exists', () => {
 		const message = bookShelf.change('anything', 'anything', 'anything');
 		expect(message).toBe('This book does not exist here');
+	});
+	test('error during save', () => {
+		bookRepository.save.mockImplementationOnce(() => {
+			throw new Error('testing');
+		});
+		expect(() => {
+			bookShelf.change(book.id, 'pages', '456');
+		}).toThrow();
 	});
 });
