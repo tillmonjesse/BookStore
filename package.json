@@ -10,6 +10,6 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
-    "uuid": "^3.4.0"
+    "uuid": "^14.0.0"
   }
 }
